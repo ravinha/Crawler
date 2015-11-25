@@ -9,11 +9,12 @@ import javax.swing.*;
 public class DataFrame extends JFrame {
     private JButton submitButton;
     private CrawlingData crawlingData;
-    public DataFrame() {
+    public DataFrame(JPanel monitorJPanel, JPanel patternMatcherJPanel) {
         super("Frazeusz");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         add(new InitialDataPanel(crawlingData));
-        add(new PatternMatcherPanel());
+        add(monitorJPanel);
+        add(patternMatcherJPanel);
     }
 }
