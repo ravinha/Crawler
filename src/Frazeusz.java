@@ -1,3 +1,4 @@
+import data.CrawlingData;
 import gui.DataFrame;
 import java.awt.*;
 import java.net.MalformedURLException;
@@ -8,7 +9,7 @@ public class Frazeusz {
         EventQueue.invokeLater(DataFrame::new);
     }
 
-    public static void start() throws InterruptedException {
+    public static void start(CrawlingData crawlingData) throws InterruptedException {
         NLProcessor nlProcessor = new NLProcessor();
         PatternMatcher patternMatcher = new PatternMatcher(nlProcessor);
         Plotter plotter = new Plotter();
