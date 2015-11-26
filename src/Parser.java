@@ -1,15 +1,23 @@
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
 
-public class Parser extends Thread {
+public class Parser extends Thread implements IParser{
 
-    int max;
-    Crawler crawler;
+    private BlockingQueue<ParserFile> fileQueue;
+    private IUrlPutter urlQueue;
+    private PatternMatcher pm;
+    private int maxDepth;
 
-    public Parser(int max, Crawler crawler) {
-        this.max = max;
-        this.crawler = crawler;
+    int max = 10000;
+
+    public Parser(BlockingQueue<ParserFile> fileQueue, IUrlPutter urlQueue,
+                  PatternMatcher pm, int maxDepth) {
+        this.fileQueue = fileQueue;
+        this.urlQueue = urlQueue;
+        this.pm = pm;
+        this.maxDepth = maxDepth;
     }
 
     public void run() {
@@ -18,19 +26,27 @@ public class Parser extends Thread {
         for(int i = 0; i< max; i++){
 
             try {
-                Thread.sleep(random.nextInt(1000));
+                Thread.sleep(random.nextInt(10));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             num = random.nextInt(max/3);
 
             try {
-                crawler.putURL(new URL("http://example" + num + ".com/"));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                urlQueue.put(new URL("http://example" + num + ".com/"), 1);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public boolean isWorking() {
+        return false;
     }
 }
