@@ -1,6 +1,9 @@
-import com.sun.media.sound.DataPusher;
+package Frazeusz;
+
 import data.CrawlingData;
 import gui.DataFrame;
+import gui.controllers.DateFrameController;
+
 import java.awt.*;
 import java.net.MalformedURLException;
 
@@ -11,9 +14,8 @@ public class Frazeusz {
         PatternMatcher patternMatcher = new PatternMatcher(nlProcessor);
         Plotter plotter = new Plotter();
         patternMatcher.addObserver(plotter);
-        EventQueue.invokeLater(() -> {
-            new DataFrame();
-        });
+        DateFrameController dateFrameController = new DateFrameController();
+        EventQueue.invokeLater(() -> new DataFrame(dateFrameController));
     }
 
     public static void start(CrawlingData crawlingData) throws InterruptedException {

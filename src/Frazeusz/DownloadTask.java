@@ -1,3 +1,5 @@
+package Frazeusz;
+
 import java.net.URL;
 
 public class DownloadTask implements Runnable{
