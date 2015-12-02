@@ -29,25 +29,30 @@ public class DataFrame extends JFrame {
 //        add(monitorJPanel);
 //        add(patternMatcherJPanel);
     }
-    private void initComponents(){
+
+    private void initComponents() {
         submitButton = new JButton("Start");
         closeButton = new JButton("Close");
         initialDataPanel = new InitialDataPanel(dateFrameController);
     }
 
-    private void addListeners(){
+    private void addListeners() {
         addSubmitListener();
         addCloseListener();
     }
 
-    private void addSubmitListener(){
-        submitButton.addActionListener(e -> dateFrameController.start());
-        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+    private void addSubmitListener() {
+        submitButton.addActionListener(e -> {
+            dateFrameController.start();
+            dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        });
     }
 
-    private void addCloseListener(){
-        closeButton.addActionListener(e -> dateFrameController.close());
-        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+    private void addCloseListener() {
+        closeButton.addActionListener(e -> {
+            dateFrameController.close();
+            dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        });
     }
 
     public InitialDataPanel getInitialDataPanel() {
