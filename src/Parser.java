@@ -1,6 +1,5 @@
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
 public class Parser extends Thread implements IParser{
@@ -10,8 +9,6 @@ public class Parser extends Thread implements IParser{
     private PatternMatcher pm;
     private int maxDepth;
 
-    int max = 10000;
-
     public Parser(BlockingQueue<ParserFile> fileQueue, IUrlPutter urlQueue,
                   PatternMatcher pm, int maxDepth) {
         this.fileQueue = fileQueue;
@@ -20,21 +17,37 @@ public class Parser extends Thread implements IParser{
         this.maxDepth = maxDepth;
     }
 
+    String[] addresses = {
+            "http://www.onet.pl",
+            "http://www.wp.pl",
+            "http://www.gazeta.pl",
+            "http://www.sport.pl",
+            "http://www.agh.edu.pl",
+    };
+
+
     public void run() {
-        int num;
-        Random random = new Random();
-        for(int i = 0; i< max; i++){
+
+        for(String address : addresses){
 
             try {
-                Thread.sleep(random.nextInt(10));
-            } catch (InterruptedException e) {
+//                urlQueue.put(new URL("http://example" + num + ".com/"), 1);
+                urlQueue.put(new URL(address), 1);
+            } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            num = random.nextInt(max/3);
+        }
 
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        while(! fileQueue.isEmpty()) {
             try {
-                urlQueue.put(new URL("http://example" + num + ".com/"), 1);
-            } catch (MalformedURLException e) {
+                System.out.println(fileQueue.take().getContent());
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

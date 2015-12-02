@@ -5,9 +5,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class TaskQueue implements IUrlPutter{
 
     private BlockingQueue<DownloadTask> tasks;
+    private BlockingQueue<ParserFile> fileQueue;
+    private int maxDepth;
+    private Counter counter;
 
-    public TaskQueue() {
+    public TaskQueue(BlockingQueue<ParserFile> fileQueue, int maxDepth, Counter counter) {
         this.tasks = new LinkedBlockingQueue<>();
+        this.fileQueue = fileQueue;
+        this.maxDepth = maxDepth;
+        this.counter = counter;
     }
 
     DownloadTask get() throws InterruptedException {
@@ -16,8 +22,10 @@ public class TaskQueue implements IUrlPutter{
 
     @Override
     public void put(URL url, int depth) {
+        if(depth == maxDepth)
+            return;
         try {
-            this.tasks.put(new DownloadTask(url, depth));
+            this.tasks.put(new DownloadTask(url, depth, fileQueue, counter));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

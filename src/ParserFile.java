@@ -1,25 +1,24 @@
-import javax.activation.MimeType;
 import java.net.URL;
 
 public class ParserFile {
 
-    private MimeType mime;
+    private String mime;
     private String content;
     private int depth;
     private URL url;
 
-    public ParserFile(MimeType mime, String content, int depth, URL url) {
+    public ParserFile(String mime, String content, int depth, URL url) {
         this.mime = mime;
         this.content = content;
         this.depth = depth;
         this.url = url;
     }
 
-    public MimeType getMime() {
+    public String getMime() {
         return mime;
     }
 
-    public void setMime(MimeType mime) {
+    public void setMime(String mime) {
         this.mime = mime;
     }
 

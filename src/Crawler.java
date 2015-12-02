@@ -11,18 +11,16 @@ public class Crawler {
     BlockingQueue<ParserFile> fileQueue;
     private HashSet downloadedURLS;
     ExecutorService executor;
-    private int counter;
+    private Counter counter;
     private int maxSites;
-    private int maxDepth;
 
     public Crawler(int workersPool, int maxSites, int maxDepth) {
-        this.taskQueue = new TaskQueue();
         this.fileQueue = new LinkedBlockingQueue<>();
+        this.counter = new Counter();
+        this.taskQueue = new TaskQueue(fileQueue, maxDepth, counter);
         this.executor = Executors.newFixedThreadPool(workersPool);
-        this.counter = 0;
         this.maxSites = maxSites;
         this.downloadedURLS = new HashSet();
-        this.maxDepth = maxDepth;
         new Parser(fileQueue, taskQueue, new PatternMatcher(), maxDepth).start();
     }
 
@@ -36,15 +34,13 @@ public class Crawler {
                 continue;
             executor.execute(task);
             markDownloaded(url);
-            increaseCounter();
         }
     }
 
     synchronized boolean notFinished() {
-        return (counter < maxSites);
+        return (counter.getCounter() < maxSites);
     }
 
-    private synchronized void increaseCounter() { counter++; }
     private synchronized void markDownloaded(URL url){
         downloadedURLS.add(url);
     }
@@ -52,5 +48,4 @@ public class Crawler {
     private synchronized boolean isDownloaded(URL url){
         return downloadedURLS.contains(url);
     }
-
 }
