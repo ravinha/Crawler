@@ -4,37 +4,66 @@ import Frazeusz.Crawler;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Random;
+import java.util.concurrent.BlockingQueue;
 
-public class Parser extends Thread {
+public class Parser extends Thread implements IParser{
 
-    int max;
-    Crawler crawler;
+    private BlockingQueue<ParserFile> fileQueue;
+    private IUrlPutter urlQueue;
+    private PatternMatcher pm;
+    private int maxDepth;
 
-    public Parser(int max, Crawler crawler) {
-        this.max = max;
-        this.crawler = crawler;
+    public Parser(BlockingQueue<ParserFile> fileQueue, IUrlPutter urlQueue,
+                  PatternMatcher pm, int maxDepth) {
+        this.fileQueue = fileQueue;
+        this.urlQueue = urlQueue;
+        this.pm = pm;
+        this.maxDepth = maxDepth;
     }
 
+    String[] addresses = {
+            "http://www.onet.pl",
+            "http://www.wp.pl",
+            "http://www.gazeta.pl",
+            "http://www.sport.pl",
+            "http://www.agh.edu.pl",
+    };
+
+
     public void run() {
-        int num;
-        Random random = new Random();
-        for(int i = 0; i< max; i++){
+
+        for(String address : addresses){
 
             try {
-                Thread.sleep(random.nextInt(1000));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            num = random.nextInt(max/3);
-
-            try {
-                crawler.putURL(new URL("http://example" + num + ".com/"));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+//                urlQueue.put(new URL("http://example" + num + ".com/"), 1);
+                urlQueue.put(new URL(address), 1);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
         }
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        while(! fileQueue.isEmpty()) {
+            try {
+                System.out.println(fileQueue.take().getContent());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public boolean isWorking() {
+        return false;
     }
 }
